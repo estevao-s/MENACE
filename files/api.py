@@ -200,8 +200,8 @@ class Jogador:
 
     Args:
       player_num : int
-        Valor 1 representa jogador que faz primeiro movimento e valor 2
-        representa o outro jogador.
+        Valor 1 representa jogador que faz primeiro movimento (bolinha) e valor
+        2 representa o outro jogador (xizinho).
       valor_inicial : int
         Quantidade de missangas de cada cor distribuidas inicialmente nas caixas
         de fósforo. Este valor é válido para a primeira rodada. As demais
