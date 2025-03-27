@@ -102,7 +102,7 @@ while RUNNING:
     events = pygame.event.get()
 
     lista_konami = konami(events, lista_konami)
-    if lista_konami:
+    if lista_konami == True:
         menace.save_pickles(lista_de_listas)
         RUNNING = False
 
