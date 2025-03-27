@@ -363,8 +363,14 @@ class Jogador:
     def atualizar_vitoria(self):
         """Atualiza os dicionários de escolha em caso de vitória."""
 
-        for dicionario, casa_escolhida in self.jogadas:
-            dicionario[casa_escolhida] += self.reforco_vitoria
+        for n, (dicionario, casa_escolhida) in enumerate(self.jogadas):
+            if n == len(self.jogadas) - 1:
+                # Queremos sempre repetir a jogada vitoriosa
+                for k in dicionario:
+                    dicionario[k] = 0
+                dicionario[casa_escolhida] = 1
+            else:
+                dicionario[casa_escolhida] += self.reforco_derrota
 
             if dicionario[casa_escolhida] < 0:
                 dicionario[casa_escolhida] = 0
@@ -380,9 +386,14 @@ class Jogador:
     def atualizar_derrota(self):
         """Atualiza os dicionários de escolha em caso de derrota."""
 
-        for dicionario, casa_escolhida in self.jogadas:
-            dicionario[casa_escolhida] += self.reforco_derrota
+        for n, (dicionario, casa_escolhida) in enumerate(self.jogadas):
+            if n == len(self.jogadas) - 1:
+                # Não queremos repetir a última jogada quando se perde
+                dicionario[casa_escolhida] = 0
+            else:
+                dicionario[casa_escolhida] += self.reforco_derrota
 
+            #  para não ter número negativo
             if dicionario[casa_escolhida] < 0:
                 dicionario[casa_escolhida] = 0
 
