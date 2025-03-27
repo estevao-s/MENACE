@@ -417,7 +417,7 @@ class Jogador:
             # se uma caixa está sem missangas, temos que resetá-la
             if sum(list(dicionario.values())) <= 0:
                 for k in dicionario:
-                    dicionario[k] = self.valor_inicial
+                    dicionario[k] = 1
 
         self.jogadas = []
         self.num_jogos += 1
