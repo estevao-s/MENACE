@@ -1,9 +1,9 @@
-import numpy as np
-from itertools import product
 from functools import partial
-from random import choices, choice
-from matplotlib import pyplot as plt
+from itertools import product
+from random import choice, choices
 
+import numpy as np
+from matplotlib import pyplot as plt
 
 ALL_SYMMETRY_OP = {
     "id": lambda x: x,
@@ -98,9 +98,7 @@ class Configuracao:
         self.symmetry_dict()
         self.id_ = sorted(self.symmetries.values())[0]
         self.op_name = [
-            name
-            for name in self.symmetries
-            if self.symmetries[name] == self.id_
+            name for name in self.symmetries if self.symmetries[name] == self.id_
         ][0]
         return self.id_
 
@@ -343,9 +341,7 @@ class Jogador:
 
                 prob_cada_casa /= prob_cada_casa.sum()
                 prob_cada_casa = prob_cada_casa.reshape(3, 3)
-                prob_cada_casa = ALL_SYMMETRY_OP_INV[config.op_name](
-                    prob_cada_casa
-                )
+                prob_cada_casa = ALL_SYMMETRY_OP_INV[config.op_name](prob_cada_casa)
 
                 return config_up, prob_cada_casa
             else:
