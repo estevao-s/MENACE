@@ -471,8 +471,8 @@ def plot(
     empates,
     plot_name="",
     show=False,
-    label1="Vitórias 1",
-    label2="Vitórias 2",
+    label1="Vitórias 1 (O)",
+    label2="Vitórias 2 (X)",
 ):
     fig, axe = plt.subplots(
         ncols=1,
