@@ -364,21 +364,21 @@ class Jogador:
         """Atualiza os dicionários de escolha em caso de vitória."""
 
         for n, (dicionario, casa_escolhida) in enumerate(self.jogadas):
-            if n == len(self.jogadas) - 1:
+            if self.reforco_vitoria and (n == (len(self.jogadas) - 1)):
                 # Queremos sempre repetir a jogada vitoriosa
                 for k in dicionario:
                     dicionario[k] = 0
                 dicionario[casa_escolhida] = 1
             else:
-                dicionario[casa_escolhida] += self.reforco_derrota
+                dicionario[casa_escolhida] += self.reforco_vitoria
 
-            if dicionario[casa_escolhida] < 0:
-                dicionario[casa_escolhida] = 0
+                if dicionario[casa_escolhida] < 0:
+                    dicionario[casa_escolhida] = 0
 
-            # se uma caixa está sem missangas, temos que resetá-la
-            if sum(list(dicionario.values())) <= 0:
-                for k in dicionario:
-                    dicionario[k] = self.valor_inicial
+                # se uma caixa está sem missangas, temos que resetá-la
+                if sum(list(dicionario.values())) <= 0:
+                    for k in dicionario:
+                        dicionario[k] = 1
 
         self.jogadas = []
         self.num_jogos += 1
@@ -387,20 +387,20 @@ class Jogador:
         """Atualiza os dicionários de escolha em caso de derrota."""
 
         for n, (dicionario, casa_escolhida) in enumerate(self.jogadas):
-            if n == len(self.jogadas) - 1:
+            if self.reforco_derrota and (n == (len(self.jogadas) - 1)):
                 # Não queremos repetir a última jogada quando se perde
                 dicionario[casa_escolhida] = 0
             else:
                 dicionario[casa_escolhida] += self.reforco_derrota
 
-            #  para não ter número negativo
-            if dicionario[casa_escolhida] < 0:
-                dicionario[casa_escolhida] = 0
+                #  para não ter número negativo
+                if dicionario[casa_escolhida] < 0:
+                    dicionario[casa_escolhida] = 0
 
             # se uma caixa está sem missangas, temos que resetá-la
             if sum(list(dicionario.values())) <= 0:
                 for k in dicionario:
-                    dicionario[k] = self.valor_inicial
+                    dicionario[k] = 1
 
         self.jogadas = []
         self.num_jogos += 1
