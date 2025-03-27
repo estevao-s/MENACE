@@ -1,17 +1,16 @@
 """
-Este é o arquivo responsável por guardar todas as classes e funções utilizadas na
-implementação da interface gráfica do MENACE!
+Este é o arquivo responsável por guardar todas as classes e funções utilizadas
+na implementação da interface gráfica do MENACE!
 
 :)
 """
-# ---------------------------------------------------------------------------- #
-#                                     Setup                                    #
-# ---------------------------------------------------------------------------- #
 
-# ------------------------------- Importações: ------------------------------- #
-import pygame, pickle
-from files.api import *
+import pickle
+
+import pygame
 from pygame import mixer
+
+from files.api import Configuracao, Jogador
 
 # -------------------------------- Utilidades: ------------------------------- #
 scale_factor = 10  # para os sprites
@@ -73,9 +72,7 @@ def get_bead(num):
     """
     w, h = (6, 4)
     x, y = ((num - 1) * w, 0)
-    sheet = pygame.image.load(
-        "files/assets/sprites/spr_bead.png"
-    ).convert_alpha()
+    sheet = pygame.image.load("files/assets/sprites/spr_bead.png").convert_alpha()
     sheet.set_clip(pygame.Rect(x, y, w, h))
     sprite = sheet.subsurface(sheet.get_clip())
     sprite = pygame.transform.scale_by(sprite, scale_factor)
@@ -99,9 +96,7 @@ def get_string(grupo_caixas):
     return saida
 
 
-def atualizar_tela(
-    grupo_caixas, jogada_antiga, jogada_atual, prob, grupo_probs
-):
+def atualizar_tela(grupo_caixas, jogada_antiga, jogada_atual, prob, grupo_probs):
     """
     Atualiza os valores das probabilidades e os valores das caixinhas (tabuleiro).
 
@@ -152,9 +147,7 @@ def vitoria(quem_ganhou, lista_de_listas, anim_grupo, pausado, menace=None):
         lista_jogador.append(lista_jogador[-1] + 1)
         lista_menace.append(lista_menace[-1])
         # Animação:
-        cena_voce_ganhou = CenaAnimada(
-            display_center, (80, 22), "spr_voceVenceu.png"
-        )
+        cena_voce_ganhou = CenaAnimada(display_center, (80, 22), "spr_voceVenceu.png")
         anim_grupo.add(cena_voce_ganhou)
         cena_voce_ganhou.animando = 60
         print("Você ganhou!")
@@ -164,9 +157,7 @@ def vitoria(quem_ganhou, lista_de_listas, anim_grupo, pausado, menace=None):
         lista_jogador.append(lista_jogador[-1])
         lista_menace.append(lista_menace[-1] + 1)
         # Animação:
-        cena_voce_perdeu = CenaAnimada(
-            display_center, (80, 22), "spr_vocePerdeu.png"
-        )
+        cena_voce_perdeu = CenaAnimada(display_center, (80, 22), "spr_vocePerdeu.png")
         anim_grupo.add(cena_voce_perdeu)
         cena_voce_perdeu.animando = 60
         print("MENACE ganhou!")
@@ -269,9 +260,7 @@ class Caixinhas(pygame.sprite.Sprite):
     def __init__(self, mouse, num):
         super().__init__()
         self.value = 0
-        self.sprites = get_sprites(
-            (19, 19), "files/assets/sprites/spr_caixinha.png"
-        )
+        self.sprites = get_sprites((19, 19), "files/assets/sprites/spr_caixinha.png")
         self.image = self.sprites[0]
         self.rect = self.image.get_rect()
         self.mouse = mouse
@@ -343,9 +332,7 @@ class OsAndXs(pygame.sprite.Sprite):
         self.isX = isX
         if xy == None:
             return
-        self.sprites = get_sprites(
-            (19, 19), "files/assets/sprites/spr_OsAndXs.png"
-        )
+        self.sprites = get_sprites((19, 19), "files/assets/sprites/spr_OsAndXs.png")
         self.image = self.sprites[isX]
         self.rect = self.image.get_rect()
         self.rect.center = list(xy)
@@ -375,9 +362,7 @@ class Menace(OsAndXs):
         self.verbose = verbose
         self.menace = Jogador(isX + 1)
 
-    def jogada(
-        self, grupo_caixas, lista_de_listas, anim_grupo, pausado, grupo_probs
-    ):
+    def jogada(self, grupo_caixas, lista_de_listas, anim_grupo, pausado, grupo_probs):
         # Jogada:
         estado_jogo = get_string(grupo_caixas)
         config = Configuracao(estado_jogo)
@@ -386,14 +371,10 @@ class Menace(OsAndXs):
             and (not config.check_vitoria(2))
             and (config.get_symmetry_id().count("0") > 0)
         ):
-            config, prob = self.menace.realizar_jogada(
-                estado_jogo, self.verbose, True
-            )
+            config, prob = self.menace.realizar_jogada(estado_jogo, self.verbose, True)
             prob = prob.ravel()
             temp = estado_jogo
-            atualizar_tela(
-                grupo_caixas, estado_jogo, config, prob, grupo_probs
-            )
+            atualizar_tela(grupo_caixas, estado_jogo, config, prob, grupo_probs)
             self.casa_mudada = list(
                 i != j for i, j in zip(get_string(grupo_caixas), temp)
             )
@@ -414,27 +395,19 @@ class Menace(OsAndXs):
                 "spr_embaralhando.png",
             )
             cena_embaralhando.sprites.extend(
-                get_sprites(
-                    (100, 100), f"files/assets/sprites/spr_opening_{num}.png"
-                )
+                get_sprites((100, 100), f"files/assets/sprites/spr_opening_{num}.png")
             )
-            cena_embaralhando.sprites.extend(
-                [cena_embaralhando.sprites[-1]] * 5
-            )
+            cena_embaralhando.sprites.extend([cena_embaralhando.sprites[-1]] * 5)
             anim_grupo.add(cena_embaralhando)
             cena_embaralhando.animando = len(cena_embaralhando.sprites)
             return True
 
     def save_pickles(self, lista_de_listas):
         with open(brain_save_path, "wb") as handle:
-            pickle.dump(
-                self.menace.brain, handle, protocol=pickle.HIGHEST_PROTOCOL
-            )
+            pickle.dump(self.menace.brain, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         with open(history_save_path, "wb") as handle:
-            pickle.dump(
-                lista_de_listas, handle, protocol=pickle.HIGHEST_PROTOCOL
-            )
+            pickle.dump(lista_de_listas, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     def load_pickles(self, lista_de_listas):
         with open(brain_save_path, "rb") as handle:

@@ -1,12 +1,29 @@
 """
-Oi! Este é o arquivo pincipal da nossa implementação do MENACE - desenvolvido utilizando
-a biblioteca pygame.
+Oi! Este é o arquivo pincipal da nossa implementação do MENACE - desenvolvido
+utilizando a biblioteca pygame.
 
 :)
 """
-import pygame, sys
-from files.gui import *
-from files.api import *
+
+import sys
+
+import pygame
+
+from files.api import (
+    DISPLAY_H,
+    DISPLAY_W,
+    Caixinhas,
+    Menace,
+    Player,
+    Probabilidades,
+    display_center,
+    get_string,
+    isX_constant,
+    konami,
+    mixer,
+    reset_game,
+    scale_factor,
+)
 
 RUNNING = True
 FPS = 60
@@ -48,6 +65,7 @@ Player_group.add(player)
 
 # Menace:
 menace = Menace(not player.isX)
+
 if LOADING:
     menace.load_pickles(lista_de_listas)
 
@@ -84,7 +102,7 @@ while RUNNING:
     events = pygame.event.get()
 
     lista_konami = konami(events, lista_konami)
-    if lista_konami == True:
+    if lista_konami:
         menace.save_pickles(lista_de_listas)
         RUNNING = False
 
