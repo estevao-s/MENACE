@@ -9,7 +9,7 @@ import sys
 
 import pygame
 
-from files.api import (
+from files.gui import (
     DISPLAY_H,
     DISPLAY_W,
     Caixinhas,
