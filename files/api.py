@@ -204,25 +204,30 @@ class Jogador:
         representa o outro jogador.
       valor_inicial : int
         Quantidade de missangas de cada cor distribuidas inicialmente nas caixas
-        de fósforo.
+        de fósforo. Este valor é válido para a primeira rodada. As demais
+        rodadas terão menos missangas de acordo com o `decay_do_valor_inicial`.
       reforco_vitoria : int
         Quantidade de missangas adicionadas quando se ganha.
       reforco_derrota : int
         Quantidade de missangas adicionadas quando se perde.
       reforco_empate : int
         Quantidade de missangas adicionadas quando se empata.
+      decay_do_valor_inicial : int
+        Redução do número inicial de missangas a cada rodada
+
     """
 
     def __init__(
         self,
-        player_num=1,
-        valor_inicial=8,
-        reforco_vitoria=3,
-        reforco_derrota=-1,
-        reforco_empate=0,
-        decay_do_valor_inicial=2,
+        player_num: int = 1,
+        valor_inicial: int = 8,
+        reforco_vitoria: int = 3,
+        reforco_derrota: int = -1,
+        reforco_empate: int = 0,
+        decay_do_valor_inicial: int = 2,
     ):
         assert valor_inicial > 0
+
         self.player_num = player_num
         self.valor_inicial = valor_inicial
         self.decay_do_valor_inicial = decay_do_valor_inicial
@@ -230,19 +235,21 @@ class Jogador:
         self.reforco_vitoria = reforco_vitoria
         self.reforco_derrota = reforco_derrota
         self.reforco_empate = reforco_empate
+
         self.jogadas = []
         self.num_jogos = 0
 
     def cria_dicionario_jogadas(self):
         """Cria dicionário de todas as jogadas possíveis do jogador.
 
-        Lista apenas jogos onde mais de uma escolha pode ser feita.
+        Nota: Lista apenas jogos onde mais de uma escolha pode ser feita.
 
         Condições:
         + Jogador 1 é quem começa a jogar
         + Jogos já ganhos não são listados
-        + jogos com apenas um movimento possível não são listados
-        + jogos sem um movimento possível não são listados
+        + Jogos com apenas um movimento possível não são listados
+        + Jogos sem um movimento possível não são listados
+
         """
 
         if self.player_num == 1:
@@ -257,12 +264,17 @@ class Jogador:
             for jogo in map(Configuracao, product([0, 1, 2], repeat=9))
             if jogo.lista.count(1) - jogo.lista.count(2) == diff
             and not (jogo.check_vitoria(1) or jogo.check_vitoria(2))
-            and not jogo.lista.count(0) in [0, 1]
+            and jogo.lista.count(0) not in [0, 1]
         }
 
         self.brain = jogos
 
-    def realizar_jogada(self, config, verbose=False, return_prob=False):
+    def realizar_jogada(
+        self,
+        config,
+        verbose: bool = False,
+        return_prob: bool = False,
+    ):
         """Recebe uma configuração e retorna a configuração com jogada realizada.
 
         Args:
@@ -282,6 +294,7 @@ class Jogador:
           a jogada já realizada. Se `return_prob=True`, então retorna
           adicionalmente um array com as probabilidade de cada casa ser jogada
           (probabilidades antes da jogada ser realizada).
+
         """
 
         config = Configuracao(config) if isinstance(config, str) else config
@@ -304,10 +317,10 @@ class Jogador:
         else:
             dicionario = self.brain[id_]
             posicoes = list(dicionario.keys())
-            chance = list(dicionario.values())
+            prob = list(dicionario.values())
 
             # escolhe jogada
-            casa_escolhida = choices(posicoes, weights=chance)[0]
+            casa_escolhida = choices(posicoes, weights=prob)[0]
 
             config_up = Configuracao(id_)
             mapa = config_up.symmetry_map()
@@ -320,7 +333,7 @@ class Jogador:
                 print(config.op_name)
                 print()
 
-            index = choice(np.where(mapa.ravel() == casa_escolhida)[0])
+            index = choice(list(np.where(mapa.ravel() == casa_escolhida)[0]))
 
             lista = config_up.lista.copy()
             lista[index] = self.player_num
