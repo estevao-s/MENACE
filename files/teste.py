@@ -3,24 +3,24 @@ from pprint import pprint
 
 if __name__ == "__main__":
 
-    num_jogos = 1000
+    num_jogos = 2000
 
-    player1 = Jogador(1)
-    player2 = Jogador(2, reforco_vitoria=0, reforco_derrota=0)
+    # playerO = Jogador(1)
+    playerO = Jogador(1, reforco_vitoria=0, reforco_derrota=0)
 
-    # player3 = Jogador(1, reforco_vitoria=0, reforco_derrota=0)
-    # player4 = Jogador(2)
+    # playerX = Jogador(2, reforco_vitoria=0, reforco_derrota=0)
+    playerX = Jogador(2)
 
-    playerA, playerB, vitoriasA, vitoriasB, empates = simulacao(
-        player1,
-        player2,
+    playerO, playerX, vitoriasO, vitoriasX, empates = simulacao(
+        playerO,
+        playerX,
         num_jogos,
     )
 
     print()
-    pprint(playerA.brain)
+    pprint(playerO.brain)
     print("---")
-    pprint(playerB.brain)
+    pprint(playerX.brain)
 
     plot_name = "simulacao"
-    plot(vitoriasA, vitoriasB, empates, plot_name, show=True)
+    plot(vitoriasO, vitoriasX, empates, plot_name, show=True)
