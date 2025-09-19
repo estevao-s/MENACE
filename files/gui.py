@@ -282,15 +282,18 @@ def empate(lista_de_listas, anim_grupo, pausado):
 
 class Caixinhas(pg.sprite.Sprite):
     """
-    Representa cada casa/posição no tabuleiro do jogo. Seu valor é alterado quando um
-    jogador interage com uma instância da mesma.
+    Representa cada casa/posição no tabuleiro do jogo. Seu valor é alterado
+    quando um jogador interage com uma instância da mesma.
 
     """
 
     def __init__(self, mouse, num):
         super().__init__()
         self.value = 0
-        self.sprites = get_sprites((19, 19), "files/assets/sprites/spr_caixinha.png")
+        self.sprites = get_sprites(
+            (19, 19),
+            "files/assets/sprites/spr_caixinha.png",
+        )
         self.image = self.sprites[0]
         self.rect = self.image.get_rect()
         self.mouse = mouse
@@ -325,6 +328,7 @@ class Caixinhas(pg.sprite.Sprite):
         mouse_pos = pg.mouse.get_pos()
         hover = self.rect.collidepoint(mouse_pos)
         self.image = self.sprites[1] if hover else self.sprites[0]
+
         # Checa jogada:
         for event in events:
             if (
@@ -362,10 +366,13 @@ class OsAndXs(pg.sprite.Sprite):
 
         self.isX = isX
 
-        if xy == None:
+        if xy is None:
             return
 
-        self.sprites = get_sprites((19, 19), "files/assets/sprites/spr_OsAndXs.png")
+        self.sprites = get_sprites(
+            (19, 19),
+            "files/assets/sprites/spr_OsAndXs.png",
+        )
         self.image = self.sprites[isX]
         self.rect = self.image.get_rect()
         self.rect.center = list(xy)
@@ -406,12 +413,17 @@ class Menace(OsAndXs):
         # Jogada:
         estado_jogo = get_string(grupo_caixas)
         config = Configuracao(estado_jogo)
+
         if (
             (not config.check_vitoria(1))
             and (not config.check_vitoria(2))
             and (config.get_symmetry_id().count("0") > 0)
         ):
-            config, prob = self.menace.realizar_jogada(estado_jogo, self.verbose, True)
+            config, prob = self.menace.realizar_jogada(
+                estado_jogo,
+                self.verbose,
+                True,
+            )
             prob = prob.ravel()
             temp = estado_jogo
             atualizar_tela(grupo_caixas, estado_jogo, config, prob, grupo_probs)
@@ -439,7 +451,10 @@ class Menace(OsAndXs):
                 "spr_embaralhando.png",
             )
             cena_embaralhando.sprites.extend(
-                get_sprites((100, 100), f"files/assets/sprites/spr_opening_{num}.png")
+                get_sprites(
+                    (100, 100),
+                    f"files/assets/sprites/spr_opening_{num}.png",
+                )
             )
             cena_embaralhando.sprites.extend([cena_embaralhando.sprites[-1]] * 5)
             anim_grupo.add(cena_embaralhando)
