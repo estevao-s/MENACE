@@ -5,6 +5,7 @@ utilizando a biblioteca pygame.
 :)
 """
 
+import argparse
 import sys
 
 import pygame as pg
@@ -29,6 +30,39 @@ RUNNING = True
 FPS = 60
 PAUSADO = [False, False]
 LOADING = False  # serve para carregar arquivo brain
+
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "-t",
+    "--treino",
+    type=int,
+    default=0,
+    help="Quantidade de jogos para treinar o MENACE",
+)
+
+parser.add_argument(
+    "-n",
+    "--nivel",
+    type=str,
+    default="",
+    help="Nível de desafio: fácil, médio, difícil ou impossível",
+)
+
+args = parser.parse_args()
+
+TREINO = args.treino
+
+if args.nivel:
+    if args.nivel in ["facil", "Facil", "fácil", "Fácil"]:
+        TREINO = 200
+    if args.nivel in ["medio", "Medio", "médio", "Médio"]:
+        TREINO = 500
+    if args.nivel in ["dificil", "Dificil", "difícil", "Difícil"]:
+        TREINO = 1000
+    if args.nivel in ["impossivel", "Impossivel", "impossível", "Impossível"]:
+        TREINO = 5000
 
 
 ###############################################################################
@@ -69,6 +103,7 @@ Player_group.add(player)
 
 # Menace:
 menace = Menace(not player.isX)
+menace.menace.self_train(TREINO)
 
 if LOADING:
     menace.load_pickles(lista_de_listas)
