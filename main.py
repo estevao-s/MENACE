@@ -31,7 +31,10 @@ PAUSADO = [False, False]
 LOADING = False
 
 
-# ------------------------------------ Configurações iniciais
+###############################################################################
+#                            Configurações iniciais                           #
+###############################################################################
+
 pygame.init()
 clock = pygame.time.Clock()
 pygame.event.set_allowed([pygame.KEYDOWN, pygame.QUIT, pygame.MOUSEBUTTONDOWN])
@@ -56,7 +59,10 @@ empates = [0]
 lista_de_listas = [vitorias_jogador, vitorias_menace, empates]
 
 
-# ------------------------------------ Instâncias e objetos
+###############################################################################
+#                             Instâncias e objetos                            #
+###############################################################################
+
 # Jogador:
 Player_group = pygame.sprite.Group()
 
@@ -97,7 +103,11 @@ for i in range(9):
     prob_group.add(prob_nova)
 
 
-# ------------------------------------ Loop do jogo
+###############################################################################
+#                                 Loop do jogo                                #
+###############################################################################
+
+
 while RUNNING:
     events = pygame.event.get()
 
