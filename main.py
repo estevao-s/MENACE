@@ -28,7 +28,7 @@ from files.gui import (
 RUNNING = True
 FPS = 60
 PAUSADO = [False, False]
-LOADING = False
+LOADING = False  # serve para carregar arquivo brain
 
 
 ###############################################################################

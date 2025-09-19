@@ -12,13 +12,16 @@ from pygame import mixer
 
 from files.api import Configuracao, Jogador
 
-# -------------------------------- Utilidades: ------------------------------- #
-scale_factor = 10  # para os sprites
+
+# -------------------------------- Config: ------------------------------- #
 brain_save_path = "files/assets/brain.pickle"
 history_save_path = "files/assets/history.pickle"
+computer_starts = True
+
+# -------------------------------- Display: ------------------------------- #
+scale_factor = 10  # para os sprites
 DISPLAY_W, DISPLAY_H = 1280, 960
 display_center = (DISPLAY_W / 2, DISPLAY_H / 2)
-computer_starts = True
 
 # ---------------------------- Carregando os sons: --------------------------- #
 mixer.init()
@@ -28,8 +31,26 @@ snd_lose = mixer.Sound("files/assets/audios/lose.mp3")
 snd_draw = mixer.Sound("files/assets/audios/draw.mp3")
 
 
+def get_string(grupo_caixas):
+    """
+    Devolve a configuração atual do tabuleiro em forma de string.
+
+    Args:
+        grupo_caixas (pg.sprite.Group): grupo de caixas (objetos da classe
+        Caixinhas, do tipo pg.sprite.Sprite) que descrevem o tabuleiro
+
+    Returns:
+        saida (str): string contendo a configuração atual do tabuleiro
+
+    """
+    saida = ""
+    for caixa in grupo_caixas:
+        saida += str(int(caixa.value))
+    return saida
+
+
 ###############################################################################
-#                                   Funções                                   #
+#                          Funções interface gráfica                          #
 ###############################################################################
 
 
@@ -43,6 +64,7 @@ def get_sprites(size, file):
 
     Returns:
         sprites (list): lista de superfícies/sprites do pygame
+
     """
     w, h = size
     x, y = (0, 0)
@@ -61,14 +83,16 @@ def get_sprites(size, file):
 def get_bead(num):
     """
     Devolve o sprite de uma miçanga a partir do seu número de identificação:
-        (1) = vermelho; (2) = laranja; (3) = amarelo; (4) = verde; (5) = azul claro;
-        (6) = azul escuro; (7) = roxo; (8) = rosa; e (9) = branco.
+        (1) = vermelho; (2) = laranja; (3) = amarelo; (4) = verde;
+        (5) = azul claro; (6) = azul escuro; (7) = roxo; (8) = rosa;
+        (9) = branco.
 
     Args:
         num (int): número de 1 a 9 para descrever a cor da miçanga
 
     Returns:
         sprite (pg.Surface): superfície/sprite do pygame da miçanga
+
     """
     w, h = (6, 4)
     x, y = ((num - 1) * w, 0)
@@ -77,23 +101,6 @@ def get_bead(num):
     sprite = sheet.subsurface(sheet.get_clip())
     sprite = pg.transform.scale_by(sprite, scale_factor)
     return sprite
-
-
-def get_string(grupo_caixas):
-    """
-    Devolve a configuração atual do tabuleiro em forma de string.
-
-    Args:
-        grupo_caixas (pg.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
-    do tipo pg.sprite.Sprite) que descrevem o tabuleiro
-
-    Returns:
-        saida (str): string contendo a configuração atual do tabuleiro
-    """
-    saida = ""
-    for caixa in grupo_caixas:
-        saida += str(int(caixa.value))
-    return saida
 
 
 def atualizar_tela(grupo_caixas, jogada_antiga, jogada_atual, prob, grupo_probs):
@@ -117,78 +124,12 @@ def atualizar_tela(grupo_caixas, jogada_antiga, jogada_atual, prob, grupo_probs)
         sprite.text = sprite.font.render(
             f"{probabilidade*100:.2f}%", True, (255, 255, 255)
         )
+
     for caixa, valor_antigo, valor_atual in zip(
         grupo_caixas, jogada_antiga, jogada_atual.lista
     ):
         if valor_antigo != str(valor_atual):
             caixa.change_value(valor_atual)
-
-
-def vitoria(quem_ganhou, lista_de_listas, anim_grupo, pausado, menace=None):
-    """
-    Função ativada quando alguém ganha; atualiza dados do menace e anima a cena
-    correspondente.
-
-    Args:
-        quem_ganhou: string 'p' caso o jogador tenha ganhado; instância do menace
-    caso omenace tenha ganhado
-        lista_de_listas (list): lista contendo as listas de vitória, derrota e empate
-        anim_grupo (pg.sprite.Group): grupo de cenas animadas (instâncias da classe
-    CenaAnimada)
-        pausado (list): lista com os valores booleanos de pausa utilizados para animações
-        menace (gui.Menace.menace, optional): instância do menace necessária caso o
-    ganhador seja o jogador; caso contrário, None
-    """
-    global snd_win, snd_lose
-
-    lista_jogador, lista_menace, lista_empates = lista_de_listas
-    if quem_ganhou == "p":
-        menace.atualizar_derrota()
-        lista_jogador.append(lista_jogador[-1] + 1)
-        lista_menace.append(lista_menace[-1])
-        # Animação:
-        cena_voce_ganhou = CenaAnimada(display_center, (80, 22), "spr_voceVenceu.png")
-        anim_grupo.add(cena_voce_ganhou)
-        cena_voce_ganhou.animando = 60
-        print("Você ganhou!")
-        snd_win.play()
-    else:
-        quem_ganhou.atualizar_vitoria()
-        lista_jogador.append(lista_jogador[-1])
-        lista_menace.append(lista_menace[-1] + 1)
-        # Animação:
-        cena_voce_perdeu = CenaAnimada(display_center, (80, 22), "spr_vocePerdeu.png")
-        anim_grupo.add(cena_voce_perdeu)
-        cena_voce_perdeu.animando = 60
-        print("MENACE ganhou!")
-        snd_lose.play()
-    lista_empates.append(lista_empates[-1])
-    pausado[0] = True
-    pausado[1] = 300
-
-
-def empate(lista_de_listas, anim_grupo, pausado):
-    """
-    Função ativada quando o jogo empata; atualiza dados do menace e anima a cena.
-
-    Args:
-        lista_de_listas (list): lista contendo as listas de vitória, derrota e empate
-        anim_grupo (pg.sprite.Group): grupo de cenas animadas (instâncias da classe
-    CenaAnimada)
-        pausado (list): lista com os valores booleanos de pausa utilizados para animações
-    """
-    lista_jogador, lista_menace, lista_empates = lista_de_listas
-    lista_jogador.append(lista_jogador[-1])
-    lista_menace.append(lista_menace[-1])
-    lista_empates.append(lista_empates[-1] + 1)
-    # Animação:
-    cena_empate = CenaAnimada(display_center, (80, 22), "spr_empate.png")
-    anim_grupo.add(cena_empate)
-    cena_empate.animando = 60
-    print("Empate!")
-    pausado[0] = True
-    pausado[1] = 300
-    snd_draw.play()
 
 
 def reset_game(grupo_caixas):
@@ -198,6 +139,7 @@ def reset_game(grupo_caixas):
     Args:
         grupo_caixas (pg.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
     do tipo pg.sprite.Sprite) que descrevem o tabuleiro
+
     """
     for caixa in grupo_caixas:
         caixa.change_value(0)
@@ -241,8 +183,96 @@ def konami(events, current):
 
     if "".join(exit) == "".join(current):
         return True
+
     else:
         return current
+
+
+def vitoria(quem_ganhou, lista_de_listas, anim_grupo, pausado, menace=None):
+    """
+    Função ativada quando alguém ganha; atualiza dados do menace e anima a cena
+    correspondente.
+
+    Args:
+        quem_ganhou:
+          string 'p' caso o jogador tenha ganhado; instância do menace caso
+          omenace tenha ganhado
+        lista_de_listas (list):
+          lista contendo as listas de vitória, derrota e empate
+        anim_grupo (pg.sprite.Group):
+          grupo de cenas animadas (instâncias da classe CenaAnimada)
+        pausado (list):
+          lista com os valores booleanos de pausa utilizados para animações
+        menace (gui.Menace.menace, optional):
+          instância do menace necessária caso o ganhador seja o jogador; caso
+          contrário, None
+
+    """
+    global snd_win, snd_lose
+
+    lista_jogador, lista_menace, lista_empates = lista_de_listas
+
+    if quem_ganhou == "p":
+        menace.atualizar_derrota()
+        lista_jogador.append(lista_jogador[-1] + 1)
+        lista_menace.append(lista_menace[-1])
+        # Animação:
+        cena_voce_ganhou = CenaAnimada(
+            display_center,
+            (80, 22),
+            "spr_voceVenceu.png",
+        )
+        anim_grupo.add(cena_voce_ganhou)
+        cena_voce_ganhou.animando = 60
+        print("Você ganhou!")
+        snd_win.play()
+
+    else:
+        quem_ganhou.atualizar_vitoria()
+        lista_jogador.append(lista_jogador[-1])
+        lista_menace.append(lista_menace[-1] + 1)
+        # Animação:
+        cena_voce_perdeu = CenaAnimada(
+            display_center,
+            (80, 22),
+            "spr_vocePerdeu.png",
+        )
+        anim_grupo.add(cena_voce_perdeu)
+        cena_voce_perdeu.animando = 60
+        print("MENACE ganhou!")
+        snd_lose.play()
+
+    lista_empates.append(lista_empates[-1])
+    pausado[0] = True
+    pausado[1] = 300
+
+
+def empate(lista_de_listas, anim_grupo, pausado):
+    """
+    Função ativada quando o jogo empata; atualiza dados do menace e anima a cena.
+
+    Args:
+        lista_de_listas (list):
+          lista contendo as listas de vitória, derrota e empate
+        anim_grupo (pg.sprite.Group):
+          grupo de cenas animadas (instâncias da classe CenaAnimada)
+        pausado (list):
+          lista com os valores booleanos de pausa utilizados para animações
+
+    """
+    lista_jogador, lista_menace, lista_empates = lista_de_listas
+    lista_jogador.append(lista_jogador[-1])
+    lista_menace.append(lista_menace[-1])
+    lista_empates.append(lista_empates[-1] + 1)
+
+    # Animação:
+    cena_empate = CenaAnimada(display_center, (80, 22), "spr_empate.png")
+    anim_grupo.add(cena_empate)
+    cena_empate.animando = 60
+    print("Empate!")
+    pausado[0] = True
+    pausado[1] = 300
+    snd_draw.play()
 
 
 ###############################################################################
