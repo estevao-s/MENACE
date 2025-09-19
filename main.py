@@ -118,6 +118,7 @@ while RUNNING:
             # Print brain (P)
             if event.key == pg.K_p:
                 print(menace.menace.brain)
+
             # Print histórico (H)
             if event.key == pg.K_h:
                 print(
@@ -127,6 +128,7 @@ while RUNNING:
 \n Empates: {lista_de_listas[2][-1]} \n \
 ------------------------"
                 )
+
             # Recomeçar partida atual (R)
             if event.key == pg.K_r and not PAUSADO[0]:
                 animacao_group.empty()
@@ -134,6 +136,7 @@ while RUNNING:
                 reset_game(caixinhas_group)
                 menace.menace.jogadas = []
                 mixer.stop()
+
             # Continuar depois do final de uma partida (Enter)
             if PAUSADO and event.key == pg.K_RETURN:
                 animacao_group.empty()
