@@ -7,7 +7,7 @@ utilizando a biblioteca pygame.
 
 import sys
 
-import pygame
+import pygame as pg
 
 from files.gui import (
     DISPLAY_H,
@@ -35,22 +35,20 @@ LOADING = False
 #                            Configurações iniciais                           #
 ###############################################################################
 
-pygame.init()
-clock = pygame.time.Clock()
-pygame.event.set_allowed([pygame.KEYDOWN, pygame.QUIT, pygame.MOUSEBUTTONDOWN])
-font = pygame.font.Font("files/assets/basis33.ttf", 50)
+pg.init()
+clock = pg.time.Clock()
+pg.event.set_allowed([pg.KEYDOWN, pg.QUIT, pg.MOUSEBUTTONDOWN])
+font = pg.font.Font("files/assets/basis33.ttf", 50)
 lista_konami = ["0" for _ in range(10)]
 
 # Janela:
-screen = pygame.display.set_mode(
-    (DISPLAY_W, DISPLAY_H), pygame.FULLSCREEN | pygame.SCALED
-)
-pygame.display.set_caption("MENACE")
-icon = pygame.image.load("files/assets/icon.png")
-pygame.display.set_icon(icon)
-background = pygame.image.load("files/assets/sprites/bg_colorido.png")
-background = pygame.transform.scale_by(background, scale_factor)
-pygame.mouse.set_visible(False)
+screen = pg.display.set_mode((DISPLAY_W, DISPLAY_H), pg.FULLSCREEN | pg.SCALED)
+pg.display.set_caption("MENACE")
+icon = pg.image.load("files/assets/icon.png")
+pg.display.set_icon(icon)
+background = pg.image.load("files/assets/sprites/bg_colorido.png")
+background = pg.transform.scale_by(background, scale_factor)
+pg.mouse.set_visible(False)
 
 # Placar:
 vitorias_jogador = [0]
@@ -64,7 +62,7 @@ lista_de_listas = [vitorias_jogador, vitorias_menace, empates]
 ###############################################################################
 
 # Jogador:
-Player_group = pygame.sprite.Group()
+Player_group = pg.sprite.Group()
 
 player = Player(isX_constant, (100, 100))
 Player_group.add(player)
@@ -76,27 +74,25 @@ if LOADING:
     menace.load_pickles(lista_de_listas)
 
 # Animação:
-animacao_group = pygame.sprite.Group()
-proximo_group = pygame.sprite.GroupSingle()
+animacao_group = pg.sprite.Group()
+proximo_group = pg.sprite.GroupSingle()
 
-proximo = pygame.sprite.Sprite()
-proximo.image = pygame.image.load(
-    "files/assets/sprites/spr_proximo.png"
-).convert_alpha()
-proximo.image = pygame.transform.scale_by(proximo.image, scale_factor)
+proximo = pg.sprite.Sprite()
+proximo.image = pg.image.load("files/assets/sprites/spr_proximo.png").convert_alpha()
+proximo.image = pg.transform.scale_by(proximo.image, scale_factor)
 proximo.rect = proximo.image.get_rect()
 proximo.rect.center = display_center
 proximo_group.add(proximo)
 
 # Caixinhas:
-caixinhas_group = pygame.sprite.Group()
+caixinhas_group = pg.sprite.Group()
 
 for i in range(9):
     caixinha_nova = Caixinhas(player, i + 1)
     caixinhas_group.add(caixinha_nova)
 
 # Probabilidades:
-prob_group = pygame.sprite.Group()
+prob_group = pg.sprite.Group()
 
 for i in range(9):
     prob_nova = Probabilidades("0%", i + 1, screen, font)
@@ -109,7 +105,7 @@ for i in range(9):
 
 
 while RUNNING:
-    events = pygame.event.get()
+    events = pg.event.get()
 
     lista_konami = konami(events, lista_konami)
     if lista_konami == True:
@@ -118,12 +114,12 @@ while RUNNING:
 
     # Checagem de eventos:
     for event in events:
-        if event.type == pygame.KEYDOWN:
+        if event.type == pg.KEYDOWN:
             # Print brain (P)
-            if event.key == pygame.K_p:
+            if event.key == pg.K_p:
                 print(menace.menace.brain)
             # Print histórico (H)
-            if event.key == pygame.K_h:
+            if event.key == pg.K_h:
                 print(
                     f"------------------------ \
 \n Vitórias do jogador: {lista_de_listas[0][-1]} \n \
@@ -132,14 +128,14 @@ while RUNNING:
 ------------------------"
                 )
             # Recomeçar partida atual (R)
-            if event.key == pygame.K_r and not PAUSADO[0]:
+            if event.key == pg.K_r and not PAUSADO[0]:
                 animacao_group.empty()
                 PAUSADO[0] = True
                 reset_game(caixinhas_group)
                 menace.menace.jogadas = []
                 mixer.stop()
             # Continuar depois do final de uma partida (Enter)
-            if PAUSADO and event.key == pygame.K_RETURN:
+            if PAUSADO and event.key == pg.K_RETURN:
                 animacao_group.empty()
                 PAUSADO[0] = False
                 if PAUSADO[1]:
@@ -197,9 +193,9 @@ while RUNNING:
     animacao_group.draw(screen)
     animacao_group.update()
 
-    pygame.display.update()
+    pg.display.update()
     clock.tick(FPS)
 
 # Fecha loop do jogo:
-pygame.quit()
+pg.quit()
 sys.exit()
