@@ -422,6 +422,36 @@ class Jogador:
         self.jogadas = []
         self.num_jogos += 1
 
+    def self_train(self, num_jogos, versus_dummy=True):
+        """Treina o MENACE fazendo ele jogar contra outro MENACE."""
+
+        oponente_num = 1 if self.player_num == 2 else 2
+
+        if versus_dummy:
+            adversario = Jogador(
+                oponente_num,
+                reforco_vitoria=0,
+                reforco_derrota=0,
+            )
+        else:
+            adversario = Jogador(oponente_num)
+
+        if self.player_num == 1:
+            self, adversario, _, _, _ = simulacao(
+                self,
+                adversario,
+                num_jogos,
+            )
+
+        else:
+            adversario, self, _, _, _ = simulacao(
+                adversario,
+                self,
+                num_jogos,
+            )
+
+        print(f"Máquina treinada com sucesso. {num_jogos} jogos.")
+
 
 def simulacao(player1, player2, num_jogos=100):
     jogadores = [player1, player2]
