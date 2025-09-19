@@ -18,7 +18,7 @@ brain_save_path = "files/assets/brain.pickle"
 history_save_path = "files/assets/history.pickle"
 DISPLAY_W, DISPLAY_H = 1280, 960
 display_center = (DISPLAY_W / 2, DISPLAY_H / 2)
-isX_constant = True
+computer_starts = True
 
 # ---------------------------- Carregando os sons: --------------------------- #
 mixer.init()
@@ -304,7 +304,7 @@ class Caixinhas(pg.sprite.Sprite):
                 and (not pausado[1])
                 and (len(anim_grupo) == 0)
             ):
-                self.change_value(isX_constant + 1)
+                self.change_value(computer_starts + 1)
                 menace.jogada(
                     grupo_caixas,
                     lista_de_listas,
@@ -329,9 +329,12 @@ class OsAndXs(pg.sprite.Sprite):
 
     def __init__(self, isX, xy=None):
         super().__init__()
+
         self.isX = isX
+
         if xy == None:
             return
+
         self.sprites = get_sprites((19, 19), "files/assets/sprites/spr_OsAndXs.png")
         self.image = self.sprites[isX]
         self.rect = self.image.get_rect()
@@ -362,7 +365,14 @@ class Menace(OsAndXs):
         self.verbose = verbose
         self.menace = Jogador(isX + 1)
 
-    def jogada(self, grupo_caixas, lista_de_listas, anim_grupo, pausado, grupo_probs):
+    def jogada(
+        self,
+        grupo_caixas,
+        lista_de_listas,
+        anim_grupo,
+        pausado,
+        grupo_probs,
+    ):
         # Jogada:
         estado_jogo = get_string(grupo_caixas)
         config = Configuracao(estado_jogo)
@@ -379,13 +389,17 @@ class Menace(OsAndXs):
                 i != j for i, j in zip(get_string(grupo_caixas), temp)
             )
             self.casa_mudada = self.casa_mudada.index(True) + 1
+
         # Check vitória, empate, etc.:
         if config.check_vitoria(self.isX + 1):
             vitoria(self.menace, lista_de_listas, anim_grupo, pausado)
+
         elif config.check_vitoria((not self.isX) + 1):
             vitoria("p", lista_de_listas, anim_grupo, pausado, self.menace)
+
         elif config.get_symmetry_id().count("0") == 0:
             empate(lista_de_listas, anim_grupo, pausado)
+
         else:
             # Animação:
             num = self.casa_mudada
@@ -404,10 +418,18 @@ class Menace(OsAndXs):
 
     def save_pickles(self, lista_de_listas):
         with open(brain_save_path, "wb") as handle:
-            pickle.dump(self.menace.brain, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(
+                self.menace.brain,
+                handle,
+                protocol=pickle.HIGHEST_PROTOCOL,
+            )
 
         with open(history_save_path, "wb") as handle:
-            pickle.dump(lista_de_listas, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(
+                lista_de_listas,
+                handle,
+                protocol=pickle.HIGHEST_PROTOCOL,
+            )
 
     def load_pickles(self, lista_de_listas):
         with open(brain_save_path, "rb") as handle:

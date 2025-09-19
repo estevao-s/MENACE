@@ -18,7 +18,7 @@ from files.gui import (
     Probabilidades,
     display_center,
     get_string,
-    isX_constant,
+    computer_starts,
     konami,
     mixer,
     reset_game,
@@ -64,7 +64,7 @@ lista_de_listas = [vitorias_jogador, vitorias_menace, empates]
 # Jogador:
 Player_group = pg.sprite.Group()
 
-player = Player(isX_constant, (100, 100))
+player = Player(computer_starts, (100, 100))
 Player_group.add(player)
 
 # Menace:
