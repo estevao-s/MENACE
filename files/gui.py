@@ -7,7 +7,7 @@ na implementação da interface gráfica do MENACE!
 
 import pickle
 
-import pygame
+import pygame as pg
 from pygame import mixer
 
 from files.api import Configuracao, Jogador
@@ -46,13 +46,13 @@ def get_sprites(size, file):
     """
     w, h = size
     x, y = (0, 0)
-    sheet = pygame.image.load(file).convert_alpha()
+    sheet = pg.image.load(file).convert_alpha()
     sheet_rect = sheet.get_rect()
     sprites = []
     for _ in range(0, sheet_rect.width - w + 1, w):
-        sheet.set_clip(pygame.Rect(x, y, w, h))
+        sheet.set_clip(pg.Rect(x, y, w, h))
         sprite = sheet.subsurface(sheet.get_clip())
-        sprite = pygame.transform.scale_by(sprite, scale_factor)
+        sprite = pg.transform.scale_by(sprite, scale_factor)
         sprites.append(sprite)
         x += w
     return sprites
@@ -68,14 +68,14 @@ def get_bead(num):
         num (int): número de 1 a 9 para descrever a cor da miçanga
 
     Returns:
-        sprite (pygame.Surface): superfície/sprite do pygame da miçanga
+        sprite (pg.Surface): superfície/sprite do pygame da miçanga
     """
     w, h = (6, 4)
     x, y = ((num - 1) * w, 0)
-    sheet = pygame.image.load("files/assets/sprites/spr_bead.png").convert_alpha()
-    sheet.set_clip(pygame.Rect(x, y, w, h))
+    sheet = pg.image.load("files/assets/sprites/spr_bead.png").convert_alpha()
+    sheet.set_clip(pg.Rect(x, y, w, h))
     sprite = sheet.subsurface(sheet.get_clip())
-    sprite = pygame.transform.scale_by(sprite, scale_factor)
+    sprite = pg.transform.scale_by(sprite, scale_factor)
     return sprite
 
 
@@ -84,8 +84,8 @@ def get_string(grupo_caixas):
     Devolve a configuração atual do tabuleiro em forma de string.
 
     Args:
-        grupo_caixas (pygame.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
-    do tipo pygame.sprite.Sprite) que descrevem o tabuleiro
+        grupo_caixas (pg.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
+    do tipo pg.sprite.Sprite) que descrevem o tabuleiro
 
     Returns:
         saida (str): string contendo a configuração atual do tabuleiro
@@ -101,14 +101,14 @@ def atualizar_tela(grupo_caixas, jogada_antiga, jogada_atual, prob, grupo_probs)
     Atualiza os valores das probabilidades e os valores das caixinhas (tabuleiro).
 
     Args:
-        grupo_caixas (pygame.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
-    do tipo pygame.sprite.Sprite) que descrevem o tabuleiro
+        grupo_caixas (pg.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
+    do tipo pg.sprite.Sprite) que descrevem o tabuleiro
         jogada_antiga (str): string representando a jogada anterior à atual.
         jogada_atual (api.Configuracao): instância de Configuracao representando a
     jogada atual
         prob (arr): array com as probabilidades de cada casa ser jogada (antes da jogada)
     ser realizada
-        grupo_probs (pygame.sprite.Group): grupo das probabilidades (instâncias da classe
+        grupo_probs (pg.sprite.Group): grupo das probabilidades (instâncias da classe
     Probabilidades; as quais incluem tanto os dados das probabilidades quanto os sprites
     das miçangas)
     """
@@ -133,7 +133,7 @@ def vitoria(quem_ganhou, lista_de_listas, anim_grupo, pausado, menace=None):
         quem_ganhou: string 'p' caso o jogador tenha ganhado; instância do menace
     caso omenace tenha ganhado
         lista_de_listas (list): lista contendo as listas de vitória, derrota e empate
-        anim_grupo (pygame.sprite.Group): grupo de cenas animadas (instâncias da classe
+        anim_grupo (pg.sprite.Group): grupo de cenas animadas (instâncias da classe
     CenaAnimada)
         pausado (list): lista com os valores booleanos de pausa utilizados para animações
         menace (gui.Menace.menace, optional): instância do menace necessária caso o
@@ -173,7 +173,7 @@ def empate(lista_de_listas, anim_grupo, pausado):
 
     Args:
         lista_de_listas (list): lista contendo as listas de vitória, derrota e empate
-        anim_grupo (pygame.sprite.Group): grupo de cenas animadas (instâncias da classe
+        anim_grupo (pg.sprite.Group): grupo de cenas animadas (instâncias da classe
     CenaAnimada)
         pausado (list): lista com os valores booleanos de pausa utilizados para animações
     """
@@ -196,8 +196,8 @@ def reset_game(grupo_caixas):
     Reseta o jogo, "zerando" as caixinhas do tabuleiro.
 
     Args:
-        grupo_caixas (pygame.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
-    do tipo pygame.sprite.Sprite) que descrevem o tabuleiro
+        grupo_caixas (pg.sprite.Group): grupo de caixas (objetos da classe Caixinhas,
+    do tipo pg.sprite.Sprite) que descrevem o tabuleiro
     """
     for caixa in grupo_caixas:
         caixa.change_value(0)
@@ -219,23 +219,23 @@ def konami(events, current):
     exit = ["u", "u", "d", "d", "l", "r", "l", "r", "b", "a"]
 
     for e in events:
-        if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_UP:
+        if e.type == pg.KEYDOWN:
+            if e.key == pg.K_UP:
                 del current[0]
                 current.append("u")
-            elif e.key == pygame.K_DOWN:
+            elif e.key == pg.K_DOWN:
                 del current[0]
                 current.append("d")
-            elif e.key == pygame.K_LEFT:
+            elif e.key == pg.K_LEFT:
                 del current[0]
                 current.append("l")
-            elif e.key == pygame.K_RIGHT:
+            elif e.key == pg.K_RIGHT:
                 del current[0]
                 current.append("r")
-            elif e.key == pygame.K_b:
+            elif e.key == pg.K_b:
                 del current[0]
                 current.append("b")
-            elif e.key == pygame.K_a:
+            elif e.key == pg.K_a:
                 del current[0]
                 current.append("a")
 
@@ -250,7 +250,7 @@ def konami(events, current):
 ###############################################################################
 
 
-class Caixinhas(pygame.sprite.Sprite):
+class Caixinhas(pg.sprite.Sprite):
     """
     Representa cada casa/posição no tabuleiro do jogo. Seu valor é alterado quando um
     jogador interage com uma instância da mesma.
@@ -292,13 +292,13 @@ class Caixinhas(pygame.sprite.Sprite):
     ):
         if self.image == self.sprites[2] or self.image == self.sprites[3]:
             return
-        mouse_pos = pygame.mouse.get_pos()
+        mouse_pos = pg.mouse.get_pos()
         hover = self.rect.collidepoint(mouse_pos)
         self.image = self.sprites[1] if hover else self.sprites[0]
         # Checa jogada:
         for event in events:
             if (
-                event.type == pygame.MOUSEBUTTONDOWN
+                event.type == pg.MOUSEBUTTONDOWN
                 and hover
                 and (not pausado[0])
                 and (not pausado[1])
@@ -321,7 +321,7 @@ class Caixinhas(pygame.sprite.Sprite):
         self.value = valor
 
 
-class OsAndXs(pygame.sprite.Sprite):
+class OsAndXs(pg.sprite.Sprite):
     """
     Utilizada para objetos de X ou O no jogo.
 
@@ -348,7 +348,7 @@ class Player(OsAndXs):
         super().__init__(isX, xy)
 
     def update(self):
-        self.rect.center = pygame.mouse.get_pos()
+        self.rect.center = pg.mouse.get_pos()
 
 
 class Menace(OsAndXs):
@@ -420,7 +420,7 @@ class Menace(OsAndXs):
             lista_de_listas.extend(loaded_history)
 
 
-class CenaAnimada(pygame.sprite.Sprite):
+class CenaAnimada(pg.sprite.Sprite):
     """
     Classe especial para cenas animadas utilizadas durante o jogo.
 
@@ -449,7 +449,7 @@ class CenaAnimada(pygame.sprite.Sprite):
         self.image = self.sprites[int(self.count)]
 
 
-class Probabilidades(pygame.sprite.Sprite):
+class Probabilidades(pg.sprite.Sprite):
     """
     Utilizada para plotar as probabilidades de cada jogada possível em determinada
     configuração do tabuleiro.
