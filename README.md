@@ -39,6 +39,25 @@ Basta executar o arquivo [`main.py`](./main.py) usando o Python. Certifique-se q
 python main.py
 ```
 
+O comando acima inicia um agente MENACE do zero, sem nenhum treinamento. Você pode configurar a dificuldade do MENACE escolhendo um dos 4 comandos abaixo.
+
+```sh
+python main.py --nivel facil
+```
+
+```sh
+python main.py --nivel medio
+```
+
+```sh
+python main.py --nivel dificil
+```
+
+```sh
+python main.py --nivel impossivel
+```
+
+
 ## Alguns cuidados antes de rodar o MENACE:
 	
 * Confira se você tem as bibliotecas `pygame` e `numpy` instaladas antes de tentar abrir qualquer arquivo!
